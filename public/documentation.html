@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Movie Database
+This is a basic node.js application that takes user requests and returns information about movies, actors, directors etc. 
+
+Endpoints:
+
+RETURN A LIST OF ALL MOVIES 
+    URL:                       /movies
+    HTTP Method:               GET
+    Request body data format:  none
+    Response body data format: A JSON object containing data about all movies
+
+RETURN DATA ABOUT A SINGLE MOVIE BY TITLE 
+    URL:                       /movies[title]
+    HTTP Method:               GET
+    Request body data format:  none
+    Response body data format: A JSON object containing data about a single movie containing a title, description, genre, director, image URL.. Example:
+                               {
+                                title: Elf,
+                                description: Buddy the Elf heads to New York City to 
+                                find his dad.,
+                                genre: comedy,
+                                director: John Favereu,
+                                image url: insertUrlHere
+                               }
+
+RETURN DATA ABOUT A GENRE
+    URL:                       /movies/genre/[genreName]
+    HTTP Method:               GET
+    Request body data format:  none
+    Response body data format: A JSON object containing a name and description. Structured like: 
+                               {
+                                name: fantasy,
+                                description: Characterized by the presence of fantasitical worlds, magic, and often inspired by mythology and folklore.
+                               }
+
+RETURN DATA ABOUT A DIRECTOR
+    URL:                       /movies/director/[directorName]
+    HTTP Method:               GET
+    Request body data format:  none
+    Response body data format: A JSON object containing a director's name, bio, birth year, death year. Structured like: 
+                            {
+                                name: John Favereau,
+                                bio: John Favereau is an american filmmaker and actor known for such films as Elf, Iron Man, and Chef.,
+                                age: 57
+                            }
+
+ALLOW USER TO REGISTER
+    URL:                       /users
+    HTTP Method:               post
+    Request body data format:  A JSON object containing user name, username, array of favorite movies, user email. Structured like:
+                            {
+                                name: Peter Parker,
+                                username: Spiderman,
+                                favorites: 
+                                [
+                                    Iron Man,
+                                    Elf,
+                                    Arrival
+                                ],
+                                email: pParker@gmail.com
+                            }
+    Response body data format: A JSON object containing data about the user added. Structured like: 
+                            {
+                                name: Peter Parker,
+                                username: Spiderman,
+                                favorites: 
+                                [
+                                    Iron Man,
+                                    Elf,
+                                    Arrival
+                                ],
+                                email: pParker@gmail.com
+                            }
+
+ALLOW USER TO UPDATE THEIR USERNAME
+    URL:                       /users[id]
+    HTTP Method:               put
+    Request body data format:  none
+    Response body data format: A JSON object containing data about the user added. Structured like: 
+                            {
+                                name: Peter Parker,
+                                username: Spiderman,
+                                favorites: 
+                                [
+                                    Iron Man,
+                                    Elf,
+                                    Arrival
+                                ],
+                                email: pParker@gmail.com
+                            }
+
+ADD MOVIE TO A USER'S FAVORITE MOVIE LIST
+    URL:                       /users[id][movieTitle]
+    HTTP Method:               post
+    Request body data format:  none
+    Response body data format: Text stating that a new movie has been added to the list.
+
+REMOVE MOVIE FROM USER'S FAVORITE MOVIE LIST
+    URL:                       /users[id][movieTitle]
+    HTTP Method:               delete
+    Request body data format:  none
+    Response body data format: Text stating that a movie has been removed from the list.
+
+REMOVE USER
+    URL:                       /users[id]
+    HTTP Method:               delete
+    Request body data format:  none
+    Response body data format: Text stating that a user has been removed.
+
+</body>
+</html>

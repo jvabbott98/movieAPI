@@ -1,0 +1,6 @@
+[
+{"_id":{"$oid":"65b25cb3c51571b206fe7549"},"username":"BarrieBonds","password":"password2","email":"barrie@gmail.com","birthday":{"$date":"1990-06-15T00:00:00Z"},"favoriteMovies":[{"$oid":"65b25709c51571b206fe7547"},{"$oid":"65b25709c51571b206fe7544"}]},
+{"_id":{"$oid":"65b25cb3c51571b206fe754a"},"username":"CallumChase","password":"password3","email":"callum@gmail.com","birthday":{"$date":"1988-09-23T00:00:00Z"},"favoriteMovies":[{"$oid":"65b25709c51571b206fe7547"},{"$oid":"65b25709c51571b206fe7544"}]},
+{"_id":{"$oid":"65b25cb3c51571b206fe754b"},"username":"DaisyDandy","password":"password4","email":"daisy@gmail.com","birthday":{"$date":"1995-03-10T00:00:00Z"},"favoriteMovies":[{"$oid":"65b25709c51571b206fe7543"},{"$oid":"65b25709c51571b206fe7545"}]},
+{"_id":{"$oid":"65b25cb3c51571b206fe754c"},"username":"EddieEagle","password":"password5","email":"eddie@gmail.com","birthday":{"$date":"1982-11-29T00:00:00Z"},"favoriteMovies":[{"$oid":"65b25709c51571b206fe7542"},{"$oid":"65b25709c51571b206fe7545"}]}
+]
