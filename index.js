@@ -222,6 +222,18 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
     });
 });
 
+//new
+app.get('/', async (req, res) => {
+  await Movies.find()
+  .then((movies) => {
+    res.status(201).json(movies);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
+});
+//new
 
 
 //Send data of a single movie to user
