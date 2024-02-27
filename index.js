@@ -37,7 +37,7 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-//new
+
 app.post('/users',
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
@@ -84,43 +84,32 @@ app.post('/users',
         res.status(500).send('Error: ' + error);
       });
   });
-//new
-
-//old
-//Create a new user
-// app.post('/users', async (req, res) => {
-//     await Users.findOne({ username: req.body.username })
-//       .then((user) => {
-//         if (user) {
-//           return res.status(400).send(req.body.username + 'already exists');
-//         } else {
-//           Users
-//             .create({
-//               username: req.body.username,
-//               password: req.body.password,
-//               email: req.body.email,
-//               birthday: req.body.birthday
-//             })
-//             .then((user) =>{res.status(201).json(user) })
-//           .catch((error) => {
-//             console.error(error);
-//             res.status(500).send('Error: ' + error);
-//           })
-//         }
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         res.status(500).send('Error: ' + error);
-//       });
-//   });
-//old
 
   // Update a user's info, by username
-app.put('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }), 
+//new
+[
+  check('username', 'Username is required').isLength({min: 5}),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
+]
+//new
+,async (req, res) => {
     // CONDITION TO CHECK ADDED HERE
     if(req.user.username !== req.params.username){
         return res.status(400).send('Permission denied');
     }
+    //new
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.password);
+    //new
+    
     // CONDITION ENDS
     await Users.findOneAndUpdate({ username: req.params.username }, {
         $set:
