@@ -86,34 +86,6 @@ app.post('/users',
   });
 //new
 
-//old
-//Create a new user
-// app.post('/users', async (req, res) => {
-//     await Users.findOne({ username: req.body.username })
-//       .then((user) => {
-//         if (user) {
-//           return res.status(400).send(req.body.username + 'already exists');
-//         } else {
-//           Users
-//             .create({
-//               username: req.body.username,
-//               password: req.body.password,
-//               email: req.body.email,
-//               birthday: req.body.birthday
-//             })
-//             .then((user) =>{res.status(201).json(user) })
-//           .catch((error) => {
-//             console.error(error);
-//             res.status(500).send('Error: ' + error);
-//           })
-//         }
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         res.status(500).send('Error: ' + error);
-//       });
-//   });
-//old
 
   // Update a user's info, by username
 app.put('/users/:username', passport.authenticate('jwt', { session: false }), 
