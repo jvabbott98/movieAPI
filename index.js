@@ -30,14 +30,13 @@ app.use(cors({
     }
     return callback(null, true);
   }
-}));  //new
+}));  /
 
-app.use(cors());//new
+app.use(cors());
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-//new
 app.post('/users',
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
