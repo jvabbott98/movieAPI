@@ -4,7 +4,6 @@ const { check, validationResult } = require('express-validator');
 const Movies = Models.Movie;
 const Users = Models.User;
 
-// mongoose.connect('mongodb://localhost:27017/moviesDB', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const express = require('express'),
@@ -34,12 +33,16 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
+/**
+ * @api {post} /users Register a new user
+ * @apiName RegisterUser
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ * @apiParam {String} password Password of the user.
+ * @apiParam {String} email Email of the user.
+ * @apiParam {Date} birthday Birthday of the user.
+ */
 app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
   [
     check('username', 'Username is required').isLength({ min: 5 }),
     check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
@@ -47,7 +50,7 @@ app.post('/users',
     check('email', 'Email does not appear to be valid').isEmail()
   ], async (req, res) => {
 
-    // check the validation object for errors
+    // Check the validation object for errors
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -58,7 +61,7 @@ app.post('/users',
     await Users.findOne({ username: req.body.username }) // Search to see if a user with the requested username already exists
       .then((user) => {
         if (user) {
-          //If the user is found, send a response that it already exists
+          // If the user is found, send a response that it already exists
           return res.status(400).send(req.body.username + ' already exists');
         } else {
           Users
@@ -80,28 +83,28 @@ app.post('/users',
         res.status(500).send('Error: ' + error);
       });
   });
-//new
 
-
-// Update a user's info, by username
+/**
+ * @api {put} /users/:username Update a user's info, by username
+ * @apiName UpdateUser
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ * @apiParam {String} password Password of the user.
+ * @apiParam {String} email Email of the user.
+ * @apiParam {Date} birthday Birthday of the user.
+ */
 app.put('/users/:username', passport.authenticate('jwt', { session: false }),
-
-  //new
   [
     check('username', 'Username is required').isLength({ min: 5 }),
     check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('password', 'Password is required').not().isEmpty(),
     check('email', 'Email does not appear to be valid').isEmail()
-  ],
-  //new
-
-  async (req, res) => {
-    // CONDITION TO CHECK ADDED HERE
+  ], async (req, res) => {
+    // Check if the authenticated user matches the username in the request
     if (req.user.username !== req.params.username) {
       return res.status(400).send('Permission denied');
     }
 
-    //new
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -109,9 +112,7 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
     }
 
     let hashedPassword = Users.hashPassword(req.body.password);
-    //new
 
-    // CONDITION ENDS
     await Users.findOneAndUpdate({ username: req.params.username }, {
       $set:
       {
@@ -131,7 +132,13 @@ app.put('/users/:username', passport.authenticate('jwt', { session: false }),
       })
   });
 
-//Add new movie to a user's favorite movies list
+/**
+ * @api {post} /users/:username/movies/:movieID Add new movie to a user's favorite movies list
+ * @apiName AddFavoriteMovie
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ * @apiParam {String} movieID ID of the movie.
+ */
 app.post('/users/:username/movies/:movieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $push: { favoriteMovies: req.params.movieID }
@@ -146,7 +153,13 @@ app.post('/users/:username/movies/:movieID', passport.authenticate('jwt', { sess
     });
 });
 
-//Remove movie from user's favoite movies list
+/**
+ * @api {delete} /users/:username/movies/:movieID Remove movie from user's favorite movies list
+ * @apiName RemoveFavoriteMovie
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ * @apiParam {String} movieID ID of the movie.
+ */
 app.delete('/users/:username/movies/:movieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $pull: { favoriteMovies: req.params.movieID }
@@ -161,7 +174,11 @@ app.delete('/users/:username/movies/:movieID', passport.authenticate('jwt', { se
     });
 });
 
-// Get all users
+/**
+ * @api {get} /users Get all users
+ * @apiName GetUsers
+ * @apiGroup User
+ */
 app.get('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.find()
     .then((users) => {
@@ -173,7 +190,12 @@ app.get('/users', passport.authenticate('jwt', { session: false }), async (req, 
     });
 });
 
-// Get a user by username
+/**
+ * @api {get} /users/:username Get a user by username
+ * @apiName GetUser
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ */
 app.get('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOne({ username: req.params.username })
     .then((user) => {
@@ -185,7 +207,12 @@ app.get('/users/:username', passport.authenticate('jwt', { session: false }), as
     });
 });
 
-// Delete a user by username
+/**
+ * @api {delete} /users/:username Delete a user by username
+ * @apiName DeleteUser
+ * @apiGroup User
+ * @apiParam {String} username Username of the user.
+ */
 app.delete('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndDelete({ username: req.params.username })
     .then((user) => {
@@ -201,8 +228,11 @@ app.delete('/users/:username', passport.authenticate('jwt', { session: false }),
     });
 });
 
-
-//Send list of movie data to user
+/**
+ * @api {get} /movies Get all movies
+ * @apiName GetMovies
+ * @apiGroup Movie
+ */
 app.get('/movies', async (req, res) => {
   await Movies.find()
     .then((movies) => {
@@ -214,48 +244,14 @@ app.get('/movies', async (req, res) => {
     });
 });
 
+/**
+ * @api {get} / Get welcome message
+ * @apiName GetWelcome
+ * @apiGroup General
+ */
 app.get('/', (req, res) => {
   // Send a simple welcome message as a response
   res.send('Welcome to my movie database!');
 });
 
-//Send data of a single movie to user
-app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.findOne({ title: req.params.title })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-//Send data about the genre of a movie to the user
-app.get('/movies/:genre', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.findOne({ "genre.name": req.params.genre })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-//Send data about the director of a movie back to the user
-app.get('/movies/:director', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.find({ director: req.params.director })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0', () => {
-  console.log('Listening on Port ' + port);
-});
+/** */
