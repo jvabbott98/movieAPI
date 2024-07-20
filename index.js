@@ -214,13 +214,10 @@ app.get('/movies', async (req, res) => {
     });
 });
 
-//new
 app.get('/', (req, res) => {
   // Send a simple welcome message as a response
   res.send('Welcome to my movie database!');
 });
-//new
-
 
 //Send data of a single movie to user
 app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -258,7 +255,6 @@ app.get('/movies/:director', passport.authenticate('jwt', { session: false }), a
     });
 });
 
-//new
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on Port ' + port);
